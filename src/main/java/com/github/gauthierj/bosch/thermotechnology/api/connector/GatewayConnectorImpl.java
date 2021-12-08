@@ -4,15 +4,20 @@ import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.C
 import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.RenewableAuthorizationProvider;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.WebBearerTokenProvider;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.ApplianceInformation;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.model.FloatValue;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.FloatValueImpl;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.FloatValueInformation;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.Gateway;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.GatewayInformation;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.model.StringValue;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.StringValueInformation;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserMode;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserModeValueImpl;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserModeValueInformation;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
+import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
@@ -41,6 +46,7 @@ public class GatewayConnectorImpl implements GatewayConnector {
         this.configuration = configuration;
     }
 
+    @Override
     public List<Gateway> getGateways() {
         ResponseEntity<List<Gateway>> exchange = restTemplate.exchange(configuration.getApiUrl() + "/gateways",
                 HttpMethod.GET,
@@ -50,14 +56,7 @@ public class GatewayConnectorImpl implements GatewayConnector {
         return exchange.getBody();
     }
 
-    private HttpEntity<?> getHttpEntity() {
-        HttpHeaders headers = new HttpHeaders();
-        headers.set(HttpHeaders.AUTHORIZATION, authorizationProvider.getAuthorization());
-        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
-        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
-        return httpEntity;
-    }
-
+    @Override
     public GatewayInformation getGatewayInformation(Gateway gateway) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}",
                 HttpMethod.GET,
@@ -66,6 +65,7 @@ public class GatewayConnectorImpl implements GatewayConnector {
                 gateway.deviceId()).getBody();
     }
 
+    @Override
     public ApplianceInformation getApplianceInformation(Gateway gateway) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/applianceInfo",
                 HttpMethod.GET,
@@ -74,60 +74,104 @@ public class GatewayConnectorImpl implements GatewayConnector {
                 gateway.deviceId()).getBody();
     }
 
-    public StringValue getCurrentUserMode(Gateway gateway, String zoneId) {
+    @Override
+    public UserModeValueInformation getCurrentUserMode(Gateway gateway, String zoneId) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/userMode",
                 HttpMethod.GET,
                 getHttpEntity(),
-                StringValue.class,
+                UserModeValueInformation.class,
                 gateway.deviceId(),
                 zoneId).getBody();
     }
 
-    public void setCurrentUserMode(Gateway gateway, String zoneId, String userMode) {
-
+    @Override
+    public void setCurrentUserMode(Gateway gateway, String zoneId, UserMode userMode) {
+        restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/userMode",
+                HttpMethod.PUT,
+                getHttpEntity(UserModeValueImpl.of(userMode)),
+                Void.class,
+                gateway.deviceId(),
+                zoneId);
     }
 
-    public FloatValue getClockOverrideTemperatureHeating(Gateway gateway, String zoneId) {
+    @Override
+    public FloatValueInformation getClockOverrideTemperatureHeating(Gateway gateway, String zoneId) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/clockOverride/temperatureHeating",
                 HttpMethod.GET,
                 getHttpEntity(),
-                FloatValue.class,
+                FloatValueInformation.class,
                 gateway.deviceId(),
                 zoneId).getBody();
     }
 
-    public String setClockOverrideTemperatureHeating(Gateway gateway, String zoneId, String temperature) {
-        return null;
+    @Override
+    public void setClockOverrideTemperatureHeating(Gateway gateway, String zoneId, float temperature) {
+        ResponseEntity<ResponseEntity> exchange = restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/clockOverride/temperatureHeating",
+                HttpMethod.PUT,
+                getHttpEntity(FloatValueImpl.of(temperature)),
+                ResponseEntity.class,
+                gateway.deviceId(),
+                zoneId);
+
+        System.out.println(exchange);
     }
 
-    public FloatValue getTemperatureHeatingSetpoint(Gateway gateway, String zoneId) {
+    @Override
+    public FloatValueInformation getTemperatureHeatingSetpoint(Gateway gateway, String zoneId) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/temperatureHeatingSetpoint",
                 HttpMethod.GET,
                 getHttpEntity(),
-                FloatValue.class,
+                FloatValueInformation.class,
                 gateway.deviceId(),
                 zoneId).getBody();
     }
 
-    public FloatValue getManualTemperatureHeating(Gateway gateway, String zoneId) {
+    @Override
+    public FloatValueInformation getManualTemperatureHeating(Gateway gateway, String zoneId) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/manualTemperatureHeating",
                 HttpMethod.GET,
                 getHttpEntity(),
-                FloatValue.class,
+                FloatValueInformation.class,
                 gateway.deviceId(),
                 zoneId).getBody();
     }
 
-    public String setManualTemperatureHeating(Gateway gateway, String zoneId) {
-        return null;
+    @Override
+    public void setManualTemperatureHeating(Gateway gateway, String zoneId, float temperature) {
+        restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/manualTemperatureHeating",
+                HttpMethod.PUT,
+                getHttpEntity(FloatValueImpl.of(temperature)),
+                Void.class,
+                gateway.deviceId(),
+                zoneId);
     }
 
-    public FloatValue getActualTemperature(Gateway gateway, String zoneId) {
+    @Override
+    public FloatValueInformation getActualTemperature(Gateway gateway, String zoneId) {
         return restTemplate.exchange(configuration.getApiUrl() + "/gateways/{deviceId}/resource/zones/{zoneId}/temperatureActual",
                 HttpMethod.GET,
                 getHttpEntity(),
-                FloatValue.class,
+                FloatValueInformation.class,
                 gateway.deviceId(),
                 zoneId).getBody();
+    }
+
+    // --------------------------------------------------------------------------------------------------------
+    // Private implementation
+
+    private HttpEntity<?> getHttpEntity() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, authorizationProvider.getAuthorization());
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        HttpEntity<?> httpEntity = new HttpEntity<>(headers);
+        return httpEntity;
+    }
+
+    private <T> HttpEntity<T> getHttpEntity(T body) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.AUTHORIZATION, authorizationProvider.getAuthorization());
+        headers.setAccept(List.of(MediaType.APPLICATION_JSON));
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new HttpEntity<T>(body, headers);
     }
 }

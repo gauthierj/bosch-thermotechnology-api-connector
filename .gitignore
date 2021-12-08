@@ -1,2 +1,3 @@
 target/
 *.orig
+src/main/java/com/github/gauthierj/bosch/thermotechnology/api/connector/Test.java

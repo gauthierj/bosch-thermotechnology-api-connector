@@ -1,7 +1,5 @@
 package com.github.gauthierj.bosch.thermotechnology.api.connector.model;
 
-public interface Value<T> {
-
-    T value();
-
+public enum ValueType {
+    STRING_VALUE, FLOAT_VALUE
 }
