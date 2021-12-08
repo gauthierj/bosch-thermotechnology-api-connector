@@ -10,4 +10,4 @@ GatewayConnector connector = new GatewayConnectorImpl(
     () -> "Bearer some_Bearer_Token_Obtained_From_Bosch_Developer_portal");
 ```
 
-All read and write operations are working OK.
+All read and write operations are working OK. Error handlling needs rework.
