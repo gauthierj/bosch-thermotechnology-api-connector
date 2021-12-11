@@ -1,4 +1,4 @@
-package com.github.gauthierj.bosch.thermotechnology.api.connector.model;
+package com.github.gauthierj.bosch.thermotechnology.api.connector.util.immutable;
 
 import org.immutables.value.Value;
 

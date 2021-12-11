@@ -1,8 +1,7 @@
 package com.github.gauthierj.bosch.thermotechnology.api.connector.model;
 
-import com.fasterxml.jackson.annotation.JsonSubTypes;
-import com.fasterxml.jackson.annotation.JsonTypeInfo;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.util.immutable.ImmutableStyle;
 
 @org.immutables.value.Value.Immutable
 @ImmutableStyle

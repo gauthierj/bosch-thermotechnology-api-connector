@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.client.ClientHttpResponse;
 import org.springframework.http.converter.HttpMessageConverter;
 import org.springframework.http.converter.json.MappingJackson2HttpMessageConverter;
+import org.springframework.util.FileCopyUtils;
 import org.springframework.web.client.DefaultResponseErrorHandler;
 import org.springframework.web.client.ResponseErrorHandler;
 
@@ -34,5 +35,15 @@ public class GatewayConnectorErrorHandler implements ResponseErrorHandler {
             throw new BadRequestException((Error) messageConverter.read(Error.class, response), response.getStatusCode().value());
         }
         defaultResponseErrorHandler.handleError(response);
+    }
+
+    protected byte[] getResponseBody(ClientHttpResponse response) {
+        try {
+            return FileCopyUtils.copyToByteArray(response.getBody());
+        }
+        catch (IOException ex) {
+            // ignore
+        }
+        return new byte[0];
     }
 }

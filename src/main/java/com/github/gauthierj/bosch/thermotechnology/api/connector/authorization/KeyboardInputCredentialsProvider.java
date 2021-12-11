@@ -2,7 +2,7 @@ package com.github.gauthierj.bosch.thermotechnology.api.connector.authorization;
 
 import java.util.Scanner;
 
-public class CredentialsProviderImpl implements CredentialsProvider {
+public class KeyboardInputCredentialsProvider implements CredentialsProvider {
 
     @Override
     public String getBoschId() {

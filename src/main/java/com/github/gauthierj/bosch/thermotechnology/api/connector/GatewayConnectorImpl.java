@@ -1,14 +1,10 @@
 package com.github.gauthierj.bosch.thermotechnology.api.connector;
 
-import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.CredentialsProviderImpl;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.RenewableAuthorizationProvider;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.authorization.WebBearerTokenProvider;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.ApplianceInformation;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.FloatValueImpl;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.FloatValueInformation;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.Gateway;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.GatewayInformation;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.model.StringValueInformation;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserMode;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserModeValueImpl;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.model.UserModeValueInformation;
@@ -17,21 +13,10 @@ import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
-import org.springframework.http.RequestEntity;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.client.RestTemplate;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Objects;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class GatewayConnectorImpl implements GatewayConnector {
 

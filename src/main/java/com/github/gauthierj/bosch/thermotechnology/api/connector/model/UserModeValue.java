@@ -2,7 +2,7 @@ package com.github.gauthierj.bosch.thermotechnology.api.connector.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.github.gauthierj.bosch.thermotechnology.api.connector.util.json.StringToUserModeConverter;
+import com.github.gauthierj.bosch.thermotechnology.api.connector.util.immutable.ImmutableStyle;
 import com.github.gauthierj.bosch.thermotechnology.api.connector.util.json.UserModeToStringConverter;
 
 @org.immutables.value.Value.Immutable
